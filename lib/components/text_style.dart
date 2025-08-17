@@ -49,4 +49,23 @@ class LightAppTextStyle {
     color: AppColors.btmNavInActiveItem,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle amazingStyle = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontSize: 22,
+    color: AppColors.amazingColor,
+    fontWeight: FontWeight.w700,
+  );
+  static const TextStyle oldPriceStyle = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontSize: 12,
+    color: AppColors.oldPrice,
+    fontWeight: FontWeight.w400,
+    decoration: TextDecoration.lineThrough,
+  );
+  static const TextStyle prodTimerStyle = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontSize: 15,
+    color: Colors.blue,
+    fontWeight: FontWeight.w400,
+  );
 }
