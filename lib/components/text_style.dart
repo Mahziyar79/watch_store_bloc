@@ -11,6 +11,36 @@ class LightAppTextStyle {
     fontSize: 14,
     color: AppColors.title,
   );
+  static const TextStyle selectedTab = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    color: AppColors.title,
+  );
+  static TextStyle unSelectedTab = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    color: AppColors.title.withAlpha(125),
+  );
+  static const TextStyle tagTitle = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    color: Colors.white,
+  );
+  static TextStyle caption = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontSize: 13,
+    color: AppColors.title.withAlpha(150),
+    fontWeight: FontWeight.normal,
+  );
+  static const TextStyle productTitle = TextStyle(
+    fontFamily: FontFamily.dana,
+    fontSize: 16,
+    color: AppColors.title,
+    fontWeight: FontWeight.normal,
+  );
 
   static const TextStyle hint = TextStyle(
     fontFamily: FontFamily.dana,

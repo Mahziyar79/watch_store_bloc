@@ -69,7 +69,7 @@ class ProductItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(60),
                     color: Colors.red,
                   ),
-                  child: Text('$discount%', style: LightAppTextStyle.title),
+                  child: Text('$discount%', style: LightAppTextStyle.tagTitle),
                 ),
               ),
             ],

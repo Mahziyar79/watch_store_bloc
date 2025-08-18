@@ -49,6 +49,6 @@ abstract class AppStrings {
   static const String inProccess = "درحال پردازش";
   static const String cancelled = "لغو شده";
   static const String delivered = "تحویل شده";
-  static const String lurem =
+  static const String lorem =
       "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ ";
 }
