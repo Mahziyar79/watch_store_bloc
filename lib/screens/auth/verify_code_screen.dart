@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watch_store/components/extention.dart';
@@ -11,9 +13,55 @@ import 'package:watch_store/screens/auth/cubit/auth_cubit.dart';
 import 'package:watch_store/widgets/app_text_field.dart';
 import 'package:watch_store/widgets/main_button.dart';
 
-class VerifyCodeScreen extends StatelessWidget {
-  VerifyCodeScreen({super.key});
+class VerifyCodeScreen extends StatefulWidget {
+  const VerifyCodeScreen({super.key});
+
+  @override
+  State<VerifyCodeScreen> createState() => _VerifyCodeScreenState();
+}
+
+class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
+
+  Timer? _timer;
+  int _totalTime = 120;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSec, (timer) {
+      setState(() {
+        if (_totalTime == 0) {
+          timer.cancel();
+          Navigator.of(context).pop();
+        } else {
+          _totalTime--;
+        }
+      });
+    });
+  }
+
+  String formatTime(int sec) {
+    int min = sec ~/ 60;
+    int seconds = sec % 60;
+
+    String minStr = min.toString().padLeft(2, "0");
+    String secStr = seconds.toString().padLeft(2, "0");
+
+    return "$minStr:$secStr";
+  }
+
   @override
   Widget build(BuildContext context) {
     final mobileRouteArg = ModalRoute.of(context)!.settings.arguments as String;
@@ -36,22 +84,29 @@ class VerifyCodeScreen extends StatelessWidget {
                 style: LightAppTextStyle.title,
               ),
               AppDimens.small.height,
-              Text(
-                AppStrings.wrongNumberEditNumber,
-                style: LightAppTextStyle.primaryThemeTextStyle,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  AppStrings.wrongNumberEditNumber,
+                  style: LightAppTextStyle.primaryThemeTextStyle,
+                ),
               ),
               AppDimens.large.height,
               AppTextField(
                 label: AppStrings.enterVerificationCode,
                 hint: AppStrings.hintVerificationCode,
                 controller: _controller,
-                prefixLabel: '2:56',
+                prefixLabel: formatTime(_totalTime),
               ),
               BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is VerifiedIsRegisterState) {
+                    _timer?.cancel();
                     Navigator.pushNamed(context, ScreenNames.mainScreen);
                   } else if (state is VerifiedNotRegisteState) {
+                    _timer?.cancel();
                     Navigator.pushNamed(context, ScreenNames.registerScreen);
                   } else if (state is ErrorState) {
                     ScaffoldMessenger.of(context).showSnackBar(

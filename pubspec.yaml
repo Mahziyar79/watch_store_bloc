@@ -41,6 +41,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   dio: ^5.9.0
   bloc: ^9.0.0
+  shared_preferences: ^2.5.3
+  image_picker: ^1.2.0
+  image_cropper: ^9.1.0
 
 dev_dependencies:
   flutter_test:

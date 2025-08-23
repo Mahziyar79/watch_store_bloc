@@ -8,14 +8,16 @@ import 'package:watch_store/routes/routes.dart';
 import 'package:watch_store/screens/auth/cubit/auth_cubit.dart';
 import 'package:watch_store/screens/auth/send_sms_screen.dart';
 import 'package:watch_store/screens/mainScreen/main_screen.dart';
+import 'package:watch_store/utils/shared_preferences_manager.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesManager().init();
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  
   const MyApp({super.key});
 
   @override
