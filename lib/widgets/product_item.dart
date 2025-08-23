@@ -36,7 +36,7 @@ class ProductItem extends StatelessWidget {
       width: 200,
       child: Column(
         children: [
-          Image.asset(Assets.png.unnamed.path),
+          SizedBox(height: 140, child: Image.asset(Assets.png.unnamed.path)),
           Align(
             alignment: Alignment.centerRight,
             child: Text(productName, style: LightAppTextStyle.title),

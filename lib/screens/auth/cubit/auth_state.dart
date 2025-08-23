@@ -24,3 +24,11 @@ final class VerifiedNotRegisteState extends AuthState {}
 final class LoggedInState extends AuthState {}
 
 final class LoggedOutState extends AuthState {}
+
+// Timer
+class TimerTickState extends AuthState {
+  final int remainingSeconds;
+  TimerTickState(this.remainingSeconds);
+}
+
+class TimerFinishedState extends AuthState {}

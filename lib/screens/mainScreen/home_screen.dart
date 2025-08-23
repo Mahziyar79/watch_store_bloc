@@ -75,7 +75,9 @@ class HomeScreen extends StatelessWidget {
                             return ProductItem(
                               productName: 'ساعت مردانه',
                               price: 120000,
-
+                              discount: 43,
+                              oldPrice: 312,
+                              time: 432,
                             );
                           },
                         ),
@@ -96,4 +98,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

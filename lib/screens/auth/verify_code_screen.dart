@@ -10,6 +10,7 @@ import 'package:watch_store/res/dimens.dart';
 import 'package:watch_store/res/strings.dart';
 import 'package:watch_store/routes/names.dart';
 import 'package:watch_store/screens/auth/cubit/auth_cubit.dart';
+import 'package:watch_store/utils/format_time.dart';
 import 'package:watch_store/widgets/app_text_field.dart';
 import 'package:watch_store/widgets/main_button.dart';
 
@@ -26,40 +27,14 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   @override
   void initState() {
     super.initState();
-    startTimer();
+    context.read<AuthCubit>().startTimer();
   }
 
-  Timer? _timer;
-  int _totalTime = 120;
 
   @override
   void dispose() {
-    _timer?.cancel();
+    context.read<AuthCubit>().stopTimer();
     super.dispose();
-  }
-
-  startTimer() {
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(oneSec, (timer) {
-      setState(() {
-        if (_totalTime == 0) {
-          timer.cancel();
-          Navigator.of(context).pop();
-        } else {
-          _totalTime--;
-        }
-      });
-    });
-  }
-
-  String formatTime(int sec) {
-    int min = sec ~/ 60;
-    int seconds = sec % 60;
-
-    String minStr = min.toString().padLeft(2, "0");
-    String secStr = seconds.toString().padLeft(2, "0");
-
-    return "$minStr:$secStr";
   }
 
   @override
@@ -94,19 +69,39 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                 ),
               ),
               AppDimens.large.height,
-              AppTextField(
-                label: AppStrings.enterVerificationCode,
-                hint: AppStrings.hintVerificationCode,
-                controller: _controller,
-                prefixLabel: formatTime(_totalTime),
+              BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  String timeText = "";
+                  if (state is TimerTickState) {
+                    timeText = formatTime(
+                      state.remainingSeconds,
+                    );
+                  } else if (state is TimerFinishedState) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.of(context).pop();
+                      context.read<AuthCubit>().stopTimer();
+                    });
+                  } else {
+                    timeText = formatTime(120);
+                  }
+
+                  return AppTextField(
+                    label: AppStrings.enterVerificationCode,
+                    hint: AppStrings.hintVerificationCode,
+                    controller: _controller,
+                    prefixLabel: timeText,
+                  );
+                },
               ),
               BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is VerifiedIsRegisterState) {
-                    _timer?.cancel();
+                    // cancel Timer
+                    context.read<AuthCubit>().stopTimer();
                     Navigator.pushNamed(context, ScreenNames.mainScreen);
                   } else if (state is VerifiedNotRegisteState) {
-                    _timer?.cancel();
+                    // cancel Timer
+                    context.read<AuthCubit>().stopTimer();
                     Navigator.pushNamed(context, ScreenNames.registerScreen);
                   } else if (state is ErrorState) {
                     ScaffoldMessenger.of(context).showSnackBar(

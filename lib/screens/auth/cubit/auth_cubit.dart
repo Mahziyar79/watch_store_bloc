@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -62,4 +64,28 @@ class AuthCubit extends Cubit<AuthState> {
       emit(ErrorState(e.toString()));
     }
   }
+
+  //Timer
+  Timer? _timer;
+  int _totalTime = 120;
+
+  void startTimer() {
+    _timer?.cancel();
+    _totalTime = 120;
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_totalTime == 0) {
+        timer.cancel();
+        emit(TimerFinishedState());
+      } else {
+        _totalTime--;
+        emit(TimerTickState(_totalTime));
+      }
+    });
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+  }
+
 }
