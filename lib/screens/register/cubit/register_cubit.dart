@@ -37,7 +37,6 @@ class RegisterCubit extends Cubit<RegisterState> {
         SharedPreferencesKeys.token,
       );
       _dio.options.headers['Authorization'] = "Bearer $token";
-      print(user.toMap());
 
       await _dio
           .post(Endpoints.register, data: FormData.fromMap(user.toMap()))
