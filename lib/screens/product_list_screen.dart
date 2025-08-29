@@ -90,7 +90,7 @@ class ProductGridView extends StatelessWidget {
         ),
         itemCount: 30,
         itemBuilder: (context, index) {
-          return ProductItem(productName: 'ساعت هوشمند', price: 10000,discount: 20,oldPrice: 90000,);
+          return ProductItem(productName: 'ساعت هوشمند', price: 10000,discount: 20,oldPrice: 90000,image: '',);
         },
       ),
     );

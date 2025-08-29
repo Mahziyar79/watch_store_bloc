@@ -1,16 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:watch_store/data/model/slide.dart';
 
-final List<String> imgList = [
-  "https://api2.zoomg.ir/media/2023-1-link-click-anime-cover-66cc7d0f2b5676090d029d52?w=1080&q=80",
-  "https://api2.zoomg.ir/media/10-movies-travel-68959104121d0ae8cadbd539?w=1080&q=80",
-  "https://api2.zoomg.ir/media/2023-1-link-click-anime-cover-66cc7d0f2b5676090d029d52?w=1080&q=80",
-  "https://api2.zoomg.ir/media/10-movies-travel-68959104121d0ae8cadbd539?w=1080&q=80",
-];
 
 class AppSlider extends StatefulWidget {
   const AppSlider({super.key, required this.imgList});
-  final List<String> imgList;
+  final List<Slide> imgList;
 
   @override
   State<AppSlider> createState() => _AppSliderState();
@@ -28,12 +23,12 @@ class _AppSliderState extends State<AppSlider> {
         children: [
           CarouselSlider(
             carouselController: _controller,
-            items: imgList.map((e) {
+            items: widget.imgList.map((e) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.network(e, fit: BoxFit.cover),
+                  child: Image.network(e.image, fit: BoxFit.cover),
                 ),
               );
             }).toList(),
@@ -48,7 +43,7 @@ class _AppSliderState extends State<AppSlider> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: imgList.asMap().entries.map((e) {
+            children: widget.imgList.asMap().entries.map((e) {
               return GestureDetector(
                 onTap: () {
                   setState(() {

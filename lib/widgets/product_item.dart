@@ -9,12 +9,14 @@ class ProductItem extends StatelessWidget {
   const ProductItem({
     super.key,
     required this.productName,
+    required this.image,
     required this.price,
     this.oldPrice = 0,
     this.discount = 0,
     this.time = 0,
   });
   final String productName;
+  final String image;
   final int price;
   final int oldPrice;
   final int discount;
@@ -36,7 +38,12 @@ class ProductItem extends StatelessWidget {
       width: 200,
       child: Column(
         children: [
-          SizedBox(height: 140, child: Image.asset(Assets.png.unnamed.path)),
+          SizedBox(
+            height: 140,
+            child: image.isEmpty
+                ? Image.asset(Assets.png.unnamed.path)
+                : Image.network(image, fit: BoxFit.cover),
+          ),
           Align(
             alignment: Alignment.centerRight,
             child: Text(productName, style: LightAppTextStyle.title),

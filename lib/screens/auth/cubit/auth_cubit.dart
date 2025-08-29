@@ -10,8 +10,17 @@ import 'package:watch_store/utils/shared_preferences_manager.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
+  String? _serverCode;
+  String? get serverCode => _serverCode; 
   AuthCubit() : super(AuthInitial()) {
-    emit(LoggedOutState());
+    String? token = SharedPreferencesManager().getString(
+      SharedPreferencesKeys.token,
+    );
+    if (token == null) {
+      emit(LoggedOutState());
+    } else {
+      emit(LoggedInState());
+    }
   }
   Dio dio = Dio();
 
@@ -23,7 +32,9 @@ class AuthCubit extends Cubit<AuthState> {
         data: {"mobile": mobile},
       );
       debugPrint(response.toString());
+
       if (response.statusCode == 201) {
+        _serverCode = response.data["data"]["code"].toString();
         emit(SentState(mobile: mobile));
       } else {
         emit(
@@ -46,6 +57,7 @@ class AuthCubit extends Cubit<AuthState> {
           .post(Endpoints.checkSmsCode, data: {"mobile": mobile, "code": code})
           .then((value) {
             debugPrint(value.toString());
+
             if (value.statusCode == 201) {
               SharedPreferencesManager().saveString(
                 SharedPreferencesKeys.token,
@@ -87,5 +99,4 @@ class AuthCubit extends Cubit<AuthState> {
   void stopTimer() {
     _timer?.cancel();
   }
-
 }

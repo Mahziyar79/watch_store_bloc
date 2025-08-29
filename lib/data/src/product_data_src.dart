@@ -50,9 +50,7 @@ class ProductRemoteDataSrc implements IProductDataSrc {
     List<Product> products = <Product>[];
 
     final response = await httpClient.get(Endpoints.baseUrl + routeParam);
-    debugPrint(response.statusCode.toString());
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
-    debugPrint(response.data.toString());
     for (var elemnt in response.data['all_products']['data'] as List) {
       products.add(Product.fromJson(elemnt));
     }

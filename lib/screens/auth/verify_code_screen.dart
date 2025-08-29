@@ -30,7 +30,6 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     context.read<AuthCubit>().startTimer();
   }
 
-
   @override
   void dispose() {
     context.read<AuthCubit>().stopTimer();
@@ -39,6 +38,8 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final serverCode = context.watch<AuthCubit>().serverCode;
+
     final mobileRouteArg = ModalRoute.of(context)!.settings.arguments as String;
     return SafeArea(
       child: Scaffold(
@@ -69,13 +70,15 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                 ),
               ),
               AppDimens.large.height,
+              Visibility(
+                visible: serverCode != null,
+                child: Text("کد دریافتی از سرور: $serverCode"),
+              ),
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
                   String timeText = "";
                   if (state is TimerTickState) {
-                    timeText = formatTime(
-                      state.remainingSeconds,
-                    );
+                    timeText = formatTime(state.remainingSeconds);
                   } else if (state is TimerFinishedState) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       Navigator.of(context).pop();

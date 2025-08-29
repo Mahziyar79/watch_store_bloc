@@ -3,7 +3,7 @@ import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/strings.dart';
 import 'package:watch_store/screens/mainScreen/cart_screen.dart';
-import 'package:watch_store/screens/mainScreen/home_screen.dart';
+import 'package:watch_store/screens/home/home_screen.dart';
 import 'package:watch_store/screens/mainScreen/profile_screen.dart';
 import 'package:watch_store/widgets/btm_nav_item.dart';
 
