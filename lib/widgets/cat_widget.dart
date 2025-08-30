@@ -27,7 +27,7 @@ class CatWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.all(AppDimens.small),
             height: size.height * 0.1,
-            width: size.height * 0.1,
+            width: size.height * 0.115,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppDimens.medium),
               gradient: LinearGradient(
@@ -38,10 +38,10 @@ class CatWidget extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppDimens.small),
-              child: SvgPicture.asset(iconPath),
+              child: Image.network(iconPath),
             ),
           ),
-          Text(title, style: LightAppTextStyle.title),
+          Text(title, style: LightAppTextStyle.title.copyWith(fontSize: 12)),
         ],
       ),
     );

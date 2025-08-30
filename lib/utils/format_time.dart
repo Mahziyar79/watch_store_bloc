@@ -1,9 +1,16 @@
 String formatTime(int sec) {
-  int min = sec ~/ 60;
-  int seconds = sec % 60;
+  String resultFormat;
+  final duration = Duration(seconds: sec);
 
-  String minStr = min.toString().padLeft(2, "0");
-  String secStr = seconds.toString().padLeft(2, "0");
+  String h = duration.inHours.toString().padLeft(2, "0");
+  String m = duration.inMinutes.remainder(60).toString().padLeft(2, "0");
+  String s = duration.inSeconds.remainder(60).toString().padLeft(2, "0");
 
-  return "$minStr:$secStr";
+  if (sec > 3600) {
+    resultFormat = "$h:$m:$s";
+  } else {
+    resultFormat = "$m:$s";
+  }
+
+  return resultFormat;
 }

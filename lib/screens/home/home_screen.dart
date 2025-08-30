@@ -7,6 +7,7 @@ import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
 import 'package:watch_store/res/strings.dart';
 import 'package:watch_store/screens/home/bloc/home_bloc.dart';
+import 'package:watch_store/screens/product_list/product_list_screen.dart';
 import 'package:watch_store/widgets/app_slider.dart';
 import 'package:watch_store/widgets/cat_widget.dart';
 import 'package:watch_store/widgets/product_item.dart';
@@ -43,34 +44,32 @@ class HomeScreen extends StatelessWidget {
                       MySearchBar(onTap: () {}),
                       AppSlider(imgList: state.home.sliders),
                       // Category
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CatWidget(
-                            title: AppStrings.classic,
-                            colors: AppColors.catClassicColors,
-                            iconPath: Assets.svg.clasic,
-                            onTap: () {},
-                          ),
-                          CatWidget(
-                            title: AppStrings.smart,
-                            colors: AppColors.catSmartColors,
-                            iconPath: Assets.svg.smart,
-                            onTap: () {},
-                          ),
-                          CatWidget(
-                            title: AppStrings.digital,
-                            colors: AppColors.catDigitalColors,
-                            iconPath: Assets.svg.digital,
-                            onTap: () {},
-                          ),
-                          CatWidget(
-                            title: AppStrings.desktop,
-                            colors: AppColors.catDesktopColors,
-                            iconPath: Assets.svg.desktop,
-                            onTap: () {},
-                          ),
-                        ],
+                      SizedBox(
+                        height: 100,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          itemCount: state.home.categories.length,
+                          itemBuilder: (context, index) {
+                            return CatWidget(
+                              title: state.home.categories[index].title,
+                              colors: index.isEven
+                                  ? AppColors.catDesktopColors
+                                  : AppColors.catDigitalColors,
+                              iconPath: state.home.categories[index].image,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductListScreen(
+                                      param: state.home.categories[index].id,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                       AppDimens.large.height,
                       Padding(
@@ -92,12 +91,30 @@ class HomeScreen extends StatelessWidget {
                                   reverse: true,
                                   itemBuilder: (context, index) {
                                     return ProductItem(
-                                      image: state.home.amazingProducts[index].image,
-                                      productName: state.home.amazingProducts[index].title,
-                                      price: state.home.amazingProducts[index].price,
-                                      discount: state.home.amazingProducts[index].discount,
-                                      oldPrice: state.home.amazingProducts[index].discountPrice,
-                                      time: 10,
+                                      image: state
+                                          .home
+                                          .amazingProducts[index]
+                                          .image,
+                                      productName: state
+                                          .home
+                                          .amazingProducts[index]
+                                          .title,
+                                      price: state
+                                          .home
+                                          .amazingProducts[index]
+                                          .price,
+                                      discount: state
+                                          .home
+                                          .amazingProducts[index]
+                                          .discount,
+                                      oldPrice: state
+                                          .home
+                                          .amazingProducts[index]
+                                          .discountPrice,
+                                      specialExpiration: state
+                                          .home
+                                          .amazingProducts[index]
+                                          .specialExpiration,
                                     );
                                   },
                                 ),

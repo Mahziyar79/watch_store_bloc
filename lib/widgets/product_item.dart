@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
 import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
+import 'package:watch_store/utils/format_time.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductItem extends StatefulWidget {
   const ProductItem({
     super.key,
     required this.productName,
@@ -13,17 +15,60 @@ class ProductItem extends StatelessWidget {
     required this.price,
     this.oldPrice = 0,
     this.discount = 0,
-    this.time = 0,
+    this.specialExpiration = "",
   });
+
   final String productName;
   final String image;
   final int price;
   final int oldPrice;
   final int discount;
-  final int time;
+  final String specialExpiration;
+
+  @override
+  State<ProductItem> createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
+  Timer? _timer;
+  int _remainingSeconds = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.specialExpiration.isNotEmpty) {
+      final expiry = DateTime.tryParse(widget.specialExpiration);
+      if (expiry != null) {
+        final diff = expiry.difference(DateTime.now());
+        if (!diff.isNegative) {
+          _remainingSeconds = diff.inSeconds;
+          _startTimer();
+        }
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingSeconds <= 0) {
+        timer.cancel();
+      } else {
+        setState(() => _remainingSeconds--);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final showTimer = _remainingSeconds > 0;
+
     return Container(
       padding: EdgeInsets.all(AppDimens.small),
       margin: EdgeInsets.all(AppDimens.medium),
@@ -40,13 +85,13 @@ class ProductItem extends StatelessWidget {
         children: [
           SizedBox(
             height: 140,
-            child: image.isEmpty
+            child: widget.image.isEmpty
                 ? Image.asset(Assets.png.unnamed.path)
-                : Image.network(image, fit: BoxFit.cover),
+                : Image.network(widget.image, fit: BoxFit.cover),
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: Text(productName, style: LightAppTextStyle.title),
+            child: Text(widget.productName, style: LightAppTextStyle.title),
           ),
           AppDimens.medium.height,
           Row(
@@ -56,48 +101,39 @@ class ProductItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${price.seperateWithComma} تومان',
+                    '${widget.price.seperateWithComma} تومان',
                     style: LightAppTextStyle.title,
                   ),
-                  Visibility(
-                    visible: oldPrice > 0,
-                    child: Text(
-                      oldPrice.seperateWithComma,
+                  if (widget.oldPrice > 0)
+                    Text(
+                      widget.oldPrice.seperateWithComma,
                       style: LightAppTextStyle.oldPriceStyle,
                     ),
-                  ),
                 ],
               ),
-              Visibility(
-                visible: discount > 0,
-                child: Container(
+              if (widget.discount > 0)
+                Container(
                   padding: EdgeInsets.all(AppDimens.small * .5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(60),
                     color: Colors.red,
                   ),
-                  child: Text('$discount%', style: LightAppTextStyle.tagTitle),
+                  child: Text(
+                    '${widget.discount}%',
+                    style: LightAppTextStyle.tagTitle,
+                  ),
                 ),
-              ),
             ],
           ),
           AppDimens.medium.height,
-          Visibility(
-            visible: time > 0,
-            child: Container(
-              height: 2,
-              width: double.infinity,
-              color: Colors.blue,
-            ),
-          ),
-          AppDimens.medium.height,
-          Visibility(
-            visible: time > 0,
-            child: Text(
-              time.toString(),
+          if (showTimer) ...[
+            Container(height: 2, width: double.infinity, color: Colors.blue),
+            AppDimens.medium.height,
+            Text(
+              formatTime(_remainingSeconds),
               style: LightAppTextStyle.prodTimerStyle,
             ),
-          ),
+          ],
         ],
       ),
     );
