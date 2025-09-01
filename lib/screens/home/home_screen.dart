@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/data/repo/home_repo.dart';
-import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
 import 'package:watch_store/res/strings.dart';
@@ -91,6 +90,7 @@ class HomeScreen extends StatelessWidget {
                                   reverse: true,
                                   itemBuilder: (context, index) {
                                     return ProductItem(
+                                      id: state.home.amazingProducts[index].id,
                                       image: state
                                           .home
                                           .amazingProducts[index]

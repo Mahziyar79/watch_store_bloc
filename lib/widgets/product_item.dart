@@ -5,6 +5,7 @@ import 'package:watch_store/components/text_style.dart';
 import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
+import 'package:watch_store/screens/product_single/product_single_screen.dart';
 import 'package:watch_store/utils/format_time.dart';
 
 class ProductItem extends StatefulWidget {
@@ -13,11 +14,13 @@ class ProductItem extends StatefulWidget {
     required this.productName,
     required this.image,
     required this.price,
+    required this.id,
     this.oldPrice = 0,
     this.discount = 0,
     this.specialExpiration = "",
   });
 
+  final int id;
   final String productName;
   final String image;
   final int price;
@@ -69,72 +72,78 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     final showTimer = _remainingSeconds > 0;
 
-    return Container(
-      padding: EdgeInsets.all(AppDimens.small),
-      margin: EdgeInsets.all(AppDimens.medium),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: AppColors.productBgGradiant,
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        borderRadius: BorderRadius.circular(AppDimens.medium),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProductSingleScreen(id: widget.id)),
       ),
-      width: 200,
-      child: Column(
-        children: [
-          SizedBox(
-            height: 140,
-            child: widget.image.isEmpty
-                ? Image.asset(Assets.png.unnamed.path)
-                : Image.network(widget.image, fit: BoxFit.cover),
+      child: Container(
+        padding: EdgeInsets.all(AppDimens.small),
+        margin: EdgeInsets.all(AppDimens.medium),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: AppColors.productBgGradiant,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(widget.productName, style: LightAppTextStyle.title),
-          ),
-          AppDimens.medium.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${widget.price.seperateWithComma} تومان',
-                    style: LightAppTextStyle.title,
-                  ),
-                  if (widget.oldPrice > 0)
-                    Text(
-                      widget.oldPrice.seperateWithComma,
-                      style: LightAppTextStyle.oldPriceStyle,
-                    ),
-                ],
-              ),
-              if (widget.discount > 0)
-                Container(
-                  padding: EdgeInsets.all(AppDimens.small * .5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60),
-                    color: Colors.red,
-                  ),
-                  child: Text(
-                    '${widget.discount}%',
-                    style: LightAppTextStyle.tagTitle,
-                  ),
-                ),
-            ],
-          ),
-          AppDimens.medium.height,
-          if (showTimer) ...[
-            Container(height: 2, width: double.infinity, color: Colors.blue),
-            AppDimens.medium.height,
-            Text(
-              formatTime(_remainingSeconds),
-              style: LightAppTextStyle.prodTimerStyle,
+          borderRadius: BorderRadius.circular(AppDimens.medium),
+        ),
+        width: 200,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 140,
+              child: widget.image.isEmpty
+                  ? Image.asset(Assets.png.unnamed.path)
+                  : Image.network(widget.image, fit: BoxFit.cover),
             ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(widget.productName, style: LightAppTextStyle.title),
+            ),
+            AppDimens.medium.height,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${widget.price.seperateWithComma} تومان',
+                      style: LightAppTextStyle.title,
+                    ),
+                    if (widget.oldPrice > 0)
+                      Text(
+                        widget.oldPrice.seperateWithComma,
+                        style: LightAppTextStyle.oldPriceStyle,
+                      ),
+                  ],
+                ),
+                if (widget.discount > 0)
+                  Container(
+                    padding: EdgeInsets.all(AppDimens.small * .5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: Colors.red,
+                    ),
+                    child: Text(
+                      '${widget.discount}%',
+                      style: LightAppTextStyle.tagTitle,
+                    ),
+                  ),
+              ],
+            ),
+            AppDimens.medium.height,
+            if (showTimer) ...[
+              Container(height: 2, width: double.infinity, color: Colors.blue),
+              AppDimens.medium.height,
+              Text(
+                formatTime(_remainingSeconds),
+                style: LightAppTextStyle.prodTimerStyle,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:watch_store/data/constants.dart';
 import 'package:watch_store/data/model/product.dart';
+import 'package:watch_store/data/model/product_details.dart';
 import 'package:watch_store/utils/response_validator.dart';
 
 abstract class IProductDataSrc {
+  Future<ProductDetailes> getProductDetailes(int id);
+
   Future<List<Product>> getAllByCategory(int id);
   Future<List<Product>> getAllByBrand(int id);
   Future<List<Product>> getSorted(String routeParam);
@@ -20,8 +22,9 @@ class ProductRemoteDataSrc implements IProductDataSrc {
   Future<List<Product>> getAllByBrand(int id) async {
     List<Product> products = <Product>[];
 
-    final response =
-        await httpClient.get(Endpoints.productsByBrand + id.toString());
+    final response = await httpClient.get(
+      Endpoints.productsByBrand + id.toString(),
+    );
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
     for (var elemnt in (response.data['products_by_brands']['data'] as List)) {
       products.add(Product.fromJson(elemnt));
@@ -34,8 +37,9 @@ class ProductRemoteDataSrc implements IProductDataSrc {
   Future<List<Product>> getAllByCategory(int id) async {
     List<Product> products = <Product>[];
 
-    final response =
-        await httpClient.get(Endpoints.productsByCategory + id.toString());
+    final response = await httpClient.get(
+      Endpoints.productsByCategory + id.toString(),
+    );
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
     for (var elemnt
         in (response.data['products_by_category']['data'] as List)) {
@@ -71,5 +75,12 @@ class ProductRemoteDataSrc implements IProductDataSrc {
     return products;
   }
 
-
+  @override
+  Future<ProductDetailes> getProductDetailes(int id) async {
+    final response = await httpClient.get(
+      Endpoints.productDetails + id.toString(),
+    );
+    HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
+    return ProductDetailes.fromJson(response.data['data'][0]);
+  }
 }
