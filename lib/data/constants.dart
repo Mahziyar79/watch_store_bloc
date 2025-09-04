@@ -4,6 +4,7 @@ class Endpoints {
   static const sendSms = "$baseUrl/send_sms";
   static const checkSmsCode = "$baseUrl/check_sms_code";
   static const register = "$baseUrl/register";
+  static const brands = "$baseUrl/brands";
   static const productsByBrand = "$baseUrl/products_by_brand/";
   static const productsByCategory = "$baseUrl/products_by_category/";
   static const search = "$baseUrl/all_products/";

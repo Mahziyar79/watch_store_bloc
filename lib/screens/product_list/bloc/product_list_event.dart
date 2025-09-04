@@ -7,9 +7,23 @@ sealed class ProductListEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ProductListInit extends ProductListEvent {
+class ProductCategoryListEvent extends ProductListEvent {
   final dynamic param;
-  const ProductListInit({required this.param});
+  const ProductCategoryListEvent({required this.param});
   @override
   List<Object> get props => [param];
+}
+
+class ProductSortedListEvent extends ProductListEvent {
+  final dynamic routeParam;
+  const ProductSortedListEvent({required this.routeParam});
+  @override
+  List<Object> get props => [routeParam];
+}
+
+class ProductBrandListEvent extends ProductListEvent {
+  final int id;
+  const ProductBrandListEvent({required this.id});
+  @override
+  List<Object> get props => [id];
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watch_store/components/extention.dart';
+import 'package:watch_store/data/constants.dart';
+import 'package:watch_store/data/model/product.dart';
 import 'package:watch_store/data/repo/home_repo.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
@@ -60,9 +62,11 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ProductListScreen(
-                                      param: state.home.categories[index].id,
-                                    ),
+                                    builder: (context) =>
+                                        ProductListScreen.byCategory(
+                                          categoryId:
+                                              state.home.categories[index].id,
+                                        ),
                                   ),
                                 );
                               },
@@ -71,75 +75,35 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       AppDimens.large.height,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDimens.medium,
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          reverse: true,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 320,
-                                child: ListView.builder(
-                                  physics: ClampingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: state.home.amazingProducts.length,
-                                  shrinkWrap: true,
-                                  reverse: true,
-                                  itemBuilder: (context, index) {
-                                    return ProductItem(
-                                      productItem:
-                                          state.home.amazingProducts[index],
-                                    );
-                                  },
-                                ),
+                      ProductList(
+                        mainTitle:AppStrings.newestProduct,
+                        list: state.home.newestProducts,
+                        onTap: () {
+                           Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductListScreen.sorted(
+                                routeParam:
+                                    ProductSortRoutes.newestProducts,
                               ),
-                              VerticalText(
-                                mainTitle: AppStrings.amazing,
-                                onTap: () {},
-                                subTitle: AppStrings.viewAll,
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDimens.medium,
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          reverse: true,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 320,
-                                child: ListView.builder(
-                                  physics: ClampingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: state.home.mostSellerProducts.length,
-                                  shrinkWrap: true,
-                                  reverse: true,
-                                  itemBuilder: (context, index) {
-                                    return ProductItem(
-                                      productItem:
-                                          state.home.mostSellerProducts[index],
-                                    );
-                                  },
-                                ),
+                      ProductList(
+                        list: state.home.mostSellerProducts,
+                        mainTitle:AppStrings.topSells,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductListScreen.sorted(
+                                routeParam:
+                                    ProductSortRoutes.mostViewedProducts,
                               ),
-                              VerticalText(
-                                mainTitle: AppStrings.topSells,
-                                onTap: () {
-                                  
-                                },
-                                subTitle: AppStrings.viewAll,
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   );
@@ -151,6 +115,45 @@ class HomeScreen extends StatelessWidget {
               },
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ProductList extends StatelessWidget {
+  const ProductList({super.key, required this.list, required this.onTap,required this.mainTitle});
+  final List<Product> list;
+  final String mainTitle;
+  final Function() onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppDimens.medium),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        reverse: true,
+        child: Row(
+          children: [
+            SizedBox(
+              height: 320,
+              child: ListView.builder(
+                physics: ClampingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemCount: list.length,
+                shrinkWrap: true,
+                reverse: true,
+                itemBuilder: (context, index) {
+                  return ProductItem(productItem: list[index]);
+                },
+              ),
+            ),
+            VerticalText(
+              mainTitle: mainTitle,
+              onTap: onTap,
+              subTitle: AppStrings.viewAll,
+            ),
+          ],
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:watch_store/data/constants.dart';
+import 'package:watch_store/data/model/brand.dart';
 import 'package:watch_store/data/model/product.dart';
 import 'package:watch_store/data/model/product_details.dart';
 import 'package:watch_store/utils/response_validator.dart';
@@ -11,6 +12,8 @@ abstract class IProductDataSrc {
   Future<List<Product>> getAllByBrand(int id);
   Future<List<Product>> getSorted(String routeParam);
   Future<List<Product>> searchProducts(String searchKey);
+  Future<List<Brand>> getAllBrands();
+
 }
 
 class ProductRemoteDataSrc implements IProductDataSrc {
@@ -82,5 +85,18 @@ class ProductRemoteDataSrc implements IProductDataSrc {
     );
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
     return ProductDetailes.fromJson(response.data['data'][0]);
+  }
+  
+  @override
+  Future<List<Brand>> getAllBrands() async{
+  List<Brand> brands = <Brand>[];
+
+    final response = await httpClient.get(Endpoints.brands);
+    HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
+    for (var elemnt in (response.data['all_brands'] as List)) {
+      brands.add(Brand.fromJson(elemnt));
+    }
+
+    return brands;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:watch_store/data/model/brand.dart';
 import 'package:watch_store/data/model/product.dart';
 import 'package:watch_store/data/model/product_details.dart';
 import 'package:watch_store/data/src/product_data_src.dart';
@@ -9,6 +10,7 @@ abstract class IProductReop {
   Future<List<Product>> getAllByBrand(int id);
   Future<List<Product>> getSorted(String routeParam);
   Future<List<Product>> searchProducts(String searchKey);
+  Future<List<Brand>> getAllBrands();
 }
 
 class ProductRepository implements IProductReop {
@@ -34,6 +36,9 @@ class ProductRepository implements IProductReop {
   @override
   Future<ProductDetailes> getProductDetailes(int id) =>
       _iProductDataSrc.getProductDetailes(id);
+
+  @override
+  Future<List<Brand>> getAllBrands() => _iProductDataSrc.getAllBrands();
 }
 
 final productRepository = ProductRepository(ProductRemoteDataSrc(Dio()));
