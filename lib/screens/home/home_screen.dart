@@ -90,31 +90,8 @@ class HomeScreen extends StatelessWidget {
                                   reverse: true,
                                   itemBuilder: (context, index) {
                                     return ProductItem(
-                                      id: state.home.amazingProducts[index].id,
-                                      image: state
-                                          .home
-                                          .amazingProducts[index]
-                                          .image,
-                                      productName: state
-                                          .home
-                                          .amazingProducts[index]
-                                          .title,
-                                      price: state
-                                          .home
-                                          .amazingProducts[index]
-                                          .price,
-                                      discount: state
-                                          .home
-                                          .amazingProducts[index]
-                                          .discount,
-                                      oldPrice: state
-                                          .home
-                                          .amazingProducts[index]
-                                          .discountPrice,
-                                      specialExpiration: state
-                                          .home
-                                          .amazingProducts[index]
-                                          .specialExpiration,
+                                      productItem:
+                                          state.home.amazingProducts[index],
                                     );
                                   },
                                 ),
@@ -122,6 +99,42 @@ class HomeScreen extends StatelessWidget {
                               VerticalText(
                                 mainTitle: AppStrings.amazing,
                                 onTap: () {},
+                                subTitle: AppStrings.viewAll,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimens.medium,
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                height: 320,
+                                child: ListView.builder(
+                                  physics: ClampingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: state.home.mostSellerProducts.length,
+                                  shrinkWrap: true,
+                                  reverse: true,
+                                  itemBuilder: (context, index) {
+                                    return ProductItem(
+                                      productItem:
+                                          state.home.mostSellerProducts[index],
+                                    );
+                                  },
+                                ),
+                              ),
+                              VerticalText(
+                                mainTitle: AppStrings.topSells,
+                                onTap: () {
+                                  
+                                },
                                 subTitle: AppStrings.viewAll,
                               ),
                             ],

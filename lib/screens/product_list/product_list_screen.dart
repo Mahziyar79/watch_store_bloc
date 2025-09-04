@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
+import 'package:watch_store/data/repo/cart_repo.dart';
 import 'package:watch_store/data/repo/product_repo.dart';
 import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/dimens.dart';
@@ -29,7 +30,12 @@ class ProductListScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CartBadge(count: 1),
+                ValueListenableBuilder(
+                  builder: (context, value, child) {
+                    return CartBadge(count: value);
+                  },
+                  valueListenable: cartRepository.cartCount,
+                ),
                 Row(
                   children: [
                     Text('پرفروش ترین ها', style: LightAppTextStyle.title),
@@ -60,19 +66,12 @@ class ProductListScreen extends StatelessWidget {
                           crossAxisCount: 2,
                           crossAxisSpacing: 2,
                           mainAxisSpacing: 2,
-                          childAspectRatio: 0.58
+                          childAspectRatio: 0.58,
                         ),
                         itemCount: state.productList.length,
                         itemBuilder: (context, index) {
                           return ProductItem(
-                            id: state.productList[index].id,
-                            productName: state.productList[index].title,
-                            price: state.productList[index].price,
-                            discount: state.productList[index].discount,
-                            oldPrice: state.productList[index].discountPrice,
-                            image: state.productList[index].image,
-                            specialExpiration:
-                                state.productList[index].specialExpiration,
+                            productItem: state.productList[index],
                           );
                         },
                       ),

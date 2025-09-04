@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
+import 'package:watch_store/data/model/cart.dart';
 import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
+import 'package:watch_store/screens/cart/bloc/cart_bloc.dart';
 import 'package:watch_store/widgets/surface_container.dart';
 
+class ShoppingCartItem extends StatefulWidget {
+  const ShoppingCartItem({super.key, required this.cartModel});
 
-class ShoppingCartItem extends StatelessWidget {
-  const ShoppingCartItem({
-    super.key,
-    required this.count,
-    required this.productTitle,
-    required this.price,
-    this.oldPrice = 0,
-    this.discount = 0,
-  });
-  final int count;
-  final String productTitle;
-  final int price;
-  final int oldPrice;
-  final int discount;
+  final CartModel cartModel;
 
   @override
+  State<ShoppingCartItem> createState() => _ShoppingCartItemState();
+}
+
+class _ShoppingCartItemState extends State<ShoppingCartItem> {
+  @override
   Widget build(BuildContext context) {
+    final cartBloc = BlocProvider.of<CartBloc>(context);
     return SurfaceContainer(
       child: Row(
         children: [
@@ -33,19 +31,20 @@ class ShoppingCartItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  productTitle,
+                  widget.cartModel.product,
                   style: LightAppTextStyle.productTitle.copyWith(fontSize: 13),
+                  textAlign: TextAlign.right,
                 ),
                 AppDimens.small.height,
                 Text(
-                  'قیمت : ${price.seperateWithComma} تومان',
+                  'قیمت : ${widget.cartModel.price.seperateWithComma} تومان',
                   style: LightAppTextStyle.productTitle.copyWith(fontSize: 14),
                 ),
                 AppDimens.small.height,
                 Visibility(
-                  visible: oldPrice > 0,
+                  visible: widget.cartModel.discountPrice > 0,
                   child: Text(
-                    'قیمت با تخفیف : ${oldPrice.seperateWithComma} تومان',
+                    'قیمت با تخفیف : ${widget.cartModel.discountPrice.seperateWithComma} تومان',
                     style: LightAppTextStyle.productTitle.copyWith(
                       color: AppColors.primaryColor,
                       fontSize: 14,
@@ -57,26 +56,60 @@ class ShoppingCartItem extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          widget.cartModel.deleteLoading = true;
+                        });
+                        cartBloc.add(
+                          DeleteFromCartEvent(widget.cartModel.productId),
+                        );
+                      },
                       icon: SvgPicture.asset(Assets.svg.delete),
                     ),
                     Expanded(child: SizedBox()),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          widget.cartModel.countLoading = true;
+                        });
+                        cartBloc.add(
+                          RemoveFromCartEvent(widget.cartModel.productId),
+                        );
+                      },
                       icon: SvgPicture.asset(Assets.svg.minus),
                     ),
-                    Text(' $count عدد',style: LightAppTextStyle.title,),
+                    widget.cartModel.countLoading
+                        ? SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(),
+                          )
+                        : Text(
+                            ' ${widget.cartModel.count} عدد',
+                            style: LightAppTextStyle.title,
+                          ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          widget.cartModel.countLoading = true;
+                        });
+                        cartBloc.add(
+                          AddToCartEvent(widget.cartModel.productId),
+                        );
+                      },
                       icon: SvgPicture.asset(Assets.svg.plus),
                     ),
                   ],
+                ),
+                Visibility(
+                  visible: widget.cartModel.deleteLoading,
+                  child: LinearProgressIndicator(),
                 ),
               ],
             ),
           ),
           AppDimens.small.width,
-          Image.asset(Assets.png.unnamed.path, width: 80),
+          Image.network(widget.cartModel.image, width: 80),
         ],
       ),
     );

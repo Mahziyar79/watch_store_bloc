@@ -4,10 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
 import 'package:watch_store/data/model/product_details.dart';
+import 'package:watch_store/data/repo/cart_repo.dart';
 import 'package:watch_store/data/repo/product_repo.dart';
 import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
+import 'package:watch_store/screens/cart/bloc/cart_bloc.dart';
 import 'package:watch_store/screens/product_single/bloc/product_single_bloc.dart';
 import 'package:watch_store/widgets/app_bar.dart';
 import 'package:watch_store/widgets/cart_badge.dart';
@@ -25,6 +27,7 @@ class ProductSingleScreen extends StatelessWidget {
         productSingleBloc.add(ProductSingleInit(id: id));
         return productSingleBloc;
       },
+
       child: BlocBuilder<ProductSingleBloc, ProductSingleState>(
         builder: (context, state) {
           if (state is ProductSingleLoading) {
@@ -35,7 +38,12 @@ class ProductSingleScreen extends StatelessWidget {
                 appBar: CustomAppBar(
                   child: Row(
                     children: [
-                      CartBadge(),
+                      ValueListenableBuilder(
+                        builder: (context, value, child) {
+                          return CartBadge(count: value);
+                        },
+                        valueListenable: cartRepository.cartCount,
+                      ),
                       Expanded(
                         child: Text(
                           state.productDetailes.title ?? "",
@@ -154,19 +162,51 @@ class ProductSingleScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStateColor.resolveWith((
-                                  states,
-                                ) {
-                                  return AppColors.primaryColor;
-                                }),
-                              ),
-                              child: Text(
-                                'افزودن به سبد خرید',
-                                style: LightAppTextStyle.tagTitle,
-                              ),
+                            BlocConsumer<CartBloc, CartState>(
+                              listener: (cartContext, cartState) {
+                                if (cartState is CartItemAddedState) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: AppColors.success,
+                                      content: Text(
+                                        'محصول با موفقیت به سبد خرید اضافه شد',
+                                        textAlign: TextAlign.center,
+                                        style: LightAppTextStyle.caption
+                                            .copyWith(
+                                              color: AppColors.onSuccess,
+                                            ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (cartContext, cartState) {
+                                if (cartState is CartLoadingSingleState) {
+                                  return SizedBox(
+                                    width: 100,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    BlocProvider.of<CartBloc>(context).add(
+                                      AddToCartSingleEvent(state.productDetailes.id!),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        WidgetStateColor.resolveWith((states) {
+                                          return AppColors.primaryColor;
+                                        }),
+                                  ),
+                                  child: Text(
+                                    'افزودن به سبد خرید',
+                                    style: LightAppTextStyle.tagTitle,
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -250,25 +290,23 @@ class PropertiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        physics: ClampingScrollPhysics(),
-        itemCount: properties.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(AppDimens.medium),
-            margin: EdgeInsets.symmetric(vertical: 4),
-            color: AppColors.surfaceColor,
-            child: Text(
-              "${properties[index].property} : ${properties[index].value}",
-              style: LightAppTextStyle.caption,
-              textAlign: TextAlign.right,
-            ),
-          );
-        },
-      ),
+    return ListView.builder(
+      physics: ClampingScrollPhysics(),
+      itemCount: properties.length,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(AppDimens.medium),
+          margin: EdgeInsets.symmetric(vertical: 4),
+          color: AppColors.surfaceColor,
+          child: Text(
+            "${properties[index].property} : ${properties[index].value}",
+            style: LightAppTextStyle.caption,
+            textAlign: TextAlign.right,
+          ),
+        );
+      },
     );
   }
 }
@@ -279,25 +317,23 @@ class CommentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        physics: ClampingScrollPhysics(),
-        itemCount: comments.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(AppDimens.medium),
-            margin: EdgeInsets.all(AppDimens.small),
-            color: AppColors.surfaceColor,
-            child: Text(
-              "${comments[index].user} : ${comments[index].body}",
-              style: LightAppTextStyle.caption,
-              textAlign: TextAlign.right,
-            ),
-          );
-        },
-      ),
+    return ListView.builder(
+      physics: ClampingScrollPhysics(),
+      itemCount: comments.length,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(AppDimens.medium),
+          margin: EdgeInsets.all(AppDimens.small),
+          color: AppColors.surfaceColor,
+          child: Text(
+            "${comments[index].user} : ${comments[index].body}",
+            style: LightAppTextStyle.caption,
+            textAlign: TextAlign.right,
+          ),
+        );
+      },
     );
   }
 }

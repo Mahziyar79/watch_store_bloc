@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
+import 'package:watch_store/data/model/cart.dart';
 import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
 import 'package:watch_store/res/strings.dart';
+import 'package:watch_store/screens/cart/bloc/cart_bloc.dart';
 import 'package:watch_store/widgets/app_bar.dart';
 import 'package:watch_store/widgets/shopping_cart_item.dart';
 
@@ -14,6 +17,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<CartBloc>(context).add(CartInitEvent());
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
@@ -64,19 +68,29 @@ class CartScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 6,
-                itemBuilder: (context, index) {
-                  return ShoppingCartItem(
-                    count: 0,
-                    productTitle: 'ساعت سامسونگ',
-                    price: 400000,
-                    discount: 10,
-                    oldPrice: 2000000,
+            BlocBuilder<CartBloc, CartState>(
+              builder: (context, state) {
+                if (state is CartLoadedState) {
+                  return CartList(list: state.userCart);
+                } else if (state is CartItemAddedState) {
+                  return CartList(list: state.userCart);
+                }  else if (state is CartItemDeletedState) {
+                  return CartList(list: state.userCart);
+                } else if (state is CartItemRemovedState) {
+                  return CartList(list: state.userCart);
+                } else if (state is CartErrorState) {
+                  return Text('Error');
+                } else if (state is CartLoadingState) {
+                  return LinearProgressIndicator();
+                } else {
+                  return ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<CartBloc>(context).add(CartInitEvent());
+                    },
+                    child: Text('تلاش مجدد'),
                   );
-                },
-              ),
+                }
+              },
             ),
             Container(
               height: 50,
@@ -113,6 +127,23 @@ class CartScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CartList extends StatelessWidget {
+  const CartList({super.key, required this.list});
+  final List<CartModel> list;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return ShoppingCartItem(cartModel: list[index]);
+        },
       ),
     );
   }

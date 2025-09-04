@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
+import 'package:watch_store/data/model/product.dart';
 import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
@@ -9,24 +10,9 @@ import 'package:watch_store/screens/product_single/product_single_screen.dart';
 import 'package:watch_store/utils/format_time.dart';
 
 class ProductItem extends StatefulWidget {
-  const ProductItem({
-    super.key,
-    required this.productName,
-    required this.image,
-    required this.price,
-    required this.id,
-    this.oldPrice = 0,
-    this.discount = 0,
-    this.specialExpiration = "",
-  });
+  const ProductItem({super.key, required this.productItem});
 
-  final int id;
-  final String productName;
-  final String image;
-  final int price;
-  final int oldPrice;
-  final int discount;
-  final String specialExpiration;
+  final Product productItem;
 
   @override
   State<ProductItem> createState() => _ProductItemState();
@@ -40,8 +26,8 @@ class _ProductItemState extends State<ProductItem> {
   void initState() {
     super.initState();
 
-    if (widget.specialExpiration.isNotEmpty) {
-      final expiry = DateTime.tryParse(widget.specialExpiration);
+    if (widget.productItem.specialExpiration.isNotEmpty) {
+      final expiry = DateTime.tryParse(widget.productItem.specialExpiration);
       if (expiry != null) {
         final diff = expiry.difference(DateTime.now());
         if (!diff.isNegative) {
@@ -75,7 +61,9 @@ class _ProductItemState extends State<ProductItem> {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProductSingleScreen(id: widget.id)),
+        MaterialPageRoute(
+          builder: (context) => ProductSingleScreen(id: widget.productItem.id),
+        ),
       ),
       child: Container(
         padding: EdgeInsets.all(AppDimens.small),
@@ -93,13 +81,17 @@ class _ProductItemState extends State<ProductItem> {
           children: [
             SizedBox(
               height: 140,
-              child: widget.image.isEmpty
+              child: widget.productItem.image.isEmpty
                   ? Image.asset(Assets.png.unnamed.path)
-                  : Image.network(widget.image, fit: BoxFit.cover),
+                  : Image.network(widget.productItem.image, fit: BoxFit.cover),
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: Text(widget.productName, style: LightAppTextStyle.title),
+              child: Text(
+                widget.productItem.title,
+                style: LightAppTextStyle.title,
+                textAlign: TextAlign.right,
+              ),
             ),
             AppDimens.medium.height,
             Row(
@@ -109,17 +101,17 @@ class _ProductItemState extends State<ProductItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${widget.price.seperateWithComma} تومان',
+                      '${widget.productItem.price.seperateWithComma} تومان',
                       style: LightAppTextStyle.title,
                     ),
-                    if (widget.oldPrice > 0)
+                    if (widget.productItem.discountPrice > 0)
                       Text(
-                        widget.oldPrice.seperateWithComma,
+                        widget.productItem.discountPrice.seperateWithComma,
                         style: LightAppTextStyle.oldPriceStyle,
                       ),
                   ],
                 ),
-                if (widget.discount > 0)
+                if (widget.productItem.discount > 0)
                   Container(
                     padding: EdgeInsets.all(AppDimens.small * .5),
                     decoration: BoxDecoration(
@@ -127,7 +119,7 @@ class _ProductItemState extends State<ProductItem> {
                       color: Colors.red,
                     ),
                     child: Text(
-                      '${widget.discount}%',
+                      '${widget.productItem.discount}%',
                       style: LightAppTextStyle.tagTitle,
                     ),
                   ),
