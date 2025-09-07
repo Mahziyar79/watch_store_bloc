@@ -36,16 +36,19 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           emit(CartItemAddedState(response));
         } else if (event is AddToCartSingleEvent) {
           // AddToCartSingleEvent
-           emit(CartLoadingSingleState());
+          emit(CartLoadingSingleState());
           final response = await _cartRepository.addToCart(
             productId: event.productId,
           );
           emit(CartItemAddedState(response));
-        }
-         else if (event is CartItemCountEvent) {
+        } else if (event is CartItemCountEvent) {
           // CartItemCountEvent
           await _cartRepository.countCartItems();
           emit(CartCountState());
+        } else if (event is PayEvent) {
+          // PayEvent
+          final response = await _cartRepository.payCart();
+          emit(RecivedPayLinkState(url: response));
         }
       } catch (e) {
         emit(CartErrorState());

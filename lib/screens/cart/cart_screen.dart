@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
 import 'package:watch_store/data/model/cart.dart';
@@ -71,59 +72,108 @@ class CartScreen extends StatelessWidget {
             BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
                 if (state is CartLoadedState) {
-                  return CartList(list: state.userCart);
+                  return CartList(list: state.userCart.cartList);
                 } else if (state is CartItemAddedState) {
-                  return CartList(list: state.userCart);
-                }  else if (state is CartItemDeletedState) {
-                  return CartList(list: state.userCart);
+                  return CartList(list: state.userCart.cartList);
+                } else if (state is CartItemDeletedState) {
+                  return CartList(list: state.userCart.cartList);
                 } else if (state is CartItemRemovedState) {
-                  return CartList(list: state.userCart);
+                  return CartList(list: state.userCart.cartList);
                 } else if (state is CartErrorState) {
                   return Text('Error');
                 } else if (state is CartLoadingState) {
                   return LinearProgressIndicator();
                 } else {
-                  return ElevatedButton(
-                    onPressed: () {
-                      BlocProvider.of<CartBloc>(context).add(CartInitEvent());
-                    },
-                    child: Text('تلاش مجدد'),
-                  );
+                  return CircularProgressIndicator();
                 }
               },
             ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimens.medium,
-                  vertical: AppDimens.small,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                  children: [
-                    Text(
-                      'مجموع ${644444.seperateWithComma} تومان',
-                      style: LightAppTextStyle.title,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateColor.resolveWith((states) {
-                          return AppColors.primaryColor;
-                        }),
+            BlocConsumer<CartBloc, CartState>(
+              listener: (context, state) async {
+                if (state is RecivedPayLinkState) {
+                  final Uri url = Uri.parse(state.url);
+                  if (!await launchUrl(url)) {
+                    throw Exception('Could not Launch $url');
+                  }
+                }
+              },
+              builder: (context, state) {
+                UserCart? userCart;
+                switch (state.runtimeType) {
+                  case const (CartLoadedState):
+                  case const (CartItemAddedState):
+                  case const (CartItemDeletedState):
+                  case const (CartItemRemovedState):
+                    userCart = (state as dynamic).userCart;
+                    break;
+                  case const (CartErrorState):
+                    return Text('Error');
+                  case const (CartLoadingState):
+                    return LinearProgressIndicator();
+                  default:
+                    return SizedBox();
+                }
+                return Visibility(
+                  visible: (userCart?.cartTotalPrice ?? 0) > 0,
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimens.medium,
+                        vertical: AppDimens.small,
                       ),
-                      child: Text(
-                        'ادامه فرآیند خرید',
-                        style: LightAppTextStyle.tagTitle,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                'مجموع ${userCart?.totalWithoutDiscountPrice.seperateWithComma} تومان',
+                                style: LightAppTextStyle.title.copyWith(
+                                  fontSize: 12,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Visibility(
+                                visible:
+                                    userCart?.totalWithoutDiscountPrice !=
+                                    userCart?.cartTotalPrice,
+                                child: Text(
+                                  'با تخفیف ${userCart?.cartTotalPrice.seperateWithComma} تومان',
+                                  style: LightAppTextStyle.caption.copyWith(
+                                    fontSize: 13,
+                                    color: AppColors.discountBg,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              BlocProvider.of<CartBloc>(
+                                context,
+                              ).add(PayEvent());
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateColor.resolveWith((
+                                states,
+                              ) {
+                                return AppColors.primaryColor;
+                              }),
+                            ),
+                            child: Text(
+                              'ادامه فرآیند خرید',
+                              style: LightAppTextStyle.tagTitle,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ],
         ),

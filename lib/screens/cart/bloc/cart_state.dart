@@ -10,36 +10,44 @@ sealed class CartState extends Equatable {
 final class CartInitialState extends CartState {}
 
 final class CartLoadingState extends CartState {}
+
 final class CartLoadingSingleState extends CartState {}
 
 final class CartErrorState extends CartState {}
 
 final class CartLoadedState extends CartState {
-  final List<CartModel> userCart;
+  final UserCart userCart;
   const CartLoadedState(this.userCart);
   @override
   List<Object> get props => [userCart];
 }
 
 final class CartItemDeletedState extends CartState {
-  final List<CartModel> userCart;
+  final UserCart userCart;
   const CartItemDeletedState(this.userCart);
   @override
   List<Object> get props => [userCart];
 }
 
 final class CartItemRemovedState extends CartState {
-  final List<CartModel> userCart;
+  final UserCart userCart;
   const CartItemRemovedState(this.userCart);
   @override
   List<Object> get props => [userCart];
 }
 
 final class CartItemAddedState extends CartState {
-  final List<CartModel> userCart;
+  final UserCart userCart;
   const CartItemAddedState(this.userCart);
   @override
   List<Object> get props => [userCart];
 }
 
 final class CartCountState extends CartState {}
+
+final class RecivedPayLinkState extends CartState {
+  final String url;
+  const RecivedPayLinkState({required this.url});
+  @override
+  List<Object> get props => [url];
+}
