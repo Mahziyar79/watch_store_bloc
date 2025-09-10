@@ -21,6 +21,13 @@ class ProductSortedListEvent extends ProductListEvent {
   List<Object> get props => [routeParam];
 }
 
+class ProductSearchListEvent extends ProductListEvent {
+  final dynamic searchKey;
+  const ProductSearchListEvent({required this.searchKey});
+  @override
+  List<Object> get props => [searchKey];
+}
+
 class ProductBrandListEvent extends ProductListEvent {
   final int id;
   const ProductBrandListEvent({required this.id});

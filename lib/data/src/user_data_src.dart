@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:watch_store/data/constants.dart';
 import 'package:watch_store/data/model/order.dart';
@@ -28,7 +27,6 @@ class UserRemoteDataSrc implements IUserDataSrc {
   Future<User> getUserInfo() async {
     final response = await httpClient.post(Endpoints.profile);
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
-    debugPrint(response.toString());
     return User.fromJson(response.data['data']);
   }
 

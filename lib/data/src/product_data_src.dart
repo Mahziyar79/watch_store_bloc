@@ -69,7 +69,7 @@ class ProductRemoteDataSrc implements IProductDataSrc {
   Future<List<Product>> searchProducts(String searchKey) async {
     List<Product> products = <Product>[];
 
-    final response = await httpClient.get(Endpoints.baseUrl + searchKey);
+    final response = await httpClient.get(Endpoints.search + searchKey);
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
     for (var elemnt in (response.data['all_products']['data'] as List)) {
       products.add(Product.fromJson(elemnt));
@@ -86,10 +86,10 @@ class ProductRemoteDataSrc implements IProductDataSrc {
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
     return ProductDetailes.fromJson(response.data['data'][0]);
   }
-  
+
   @override
   Future<List<Brand>> getAllBrands() async{
-  List<Brand> brands = <Brand>[];
+    List<Brand> brands = <Brand>[];
 
     final response = await httpClient.get(Endpoints.brands);
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);

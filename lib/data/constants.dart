@@ -16,6 +16,7 @@ class Endpoints {
   static const deleteFromCart = "$baseUrl/delete_from_cart";
   static const payment = "$baseUrl/payment";
   static const profile = "$baseUrl/profile";
+  static const userAddresses = "$baseUrl/user_addresses";
 }
 
 class ProductSortRoutes {

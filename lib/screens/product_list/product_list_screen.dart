@@ -33,6 +33,12 @@ class ProductListScreen extends StatelessWidget {
     );
   }
 
+  factory ProductListScreen.search({required dynamic searchKey}) {
+    return ProductListScreen._(
+      initialEvent: ProductSearchListEvent(searchKey: searchKey),
+    );
+  }
+
   factory ProductListScreen.brand({required int id}) {
     return ProductListScreen._(initialEvent: ProductBrandListEvent(id: id));
   }
