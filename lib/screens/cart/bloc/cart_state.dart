@@ -10,6 +10,7 @@ sealed class CartState extends Equatable {
 final class CartInitialState extends CartState {}
 
 final class CartLoadingState extends CartState {}
+final class UserAddressLoadingState extends CartState {}
 
 final class CartLoadingSingleState extends CartState {}
 
@@ -50,4 +51,11 @@ final class RecivedPayLinkState extends CartState {
   const RecivedPayLinkState({required this.url});
   @override
   List<Object> get props => [url];
+}
+
+final class GetUserAddressesLoadedState extends CartState {
+  final UserAddress userAddress;
+  const GetUserAddressesLoadedState({required this.userAddress});
+  @override
+  List<Object> get props => [userAddress];
 }

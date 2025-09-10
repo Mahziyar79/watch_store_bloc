@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:watch_store/data/constants.dart';
 import 'package:watch_store/data/model/cart.dart';
+import 'package:watch_store/data/model/user_address.dart';
 import 'package:watch_store/utils/response_validator.dart';
 
 abstract class ICartDataSrc {
@@ -8,6 +9,7 @@ abstract class ICartDataSrc {
   Future<UserCart> addToCart({required int productId});
   Future<UserCart> deleteFromCart({required int productId});
   Future<UserCart> removeFromCart({required int productId});
+  Future<UserAddress> getUserAddresses();
   Future<int> countCartItems();
   Future<String> payCart();
 }
@@ -72,5 +74,12 @@ class CartRemoteDataSrc implements ICartDataSrc {
     final response = await httpClient.post(Endpoints.userCart);
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
     return response.data['action'];
+  }
+
+  @override
+  Future<UserAddress> getUserAddresses() async {
+    final response = await httpClient.post(Endpoints.profile);
+    HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
+    return UserAddress.fromJson(response.data['data']);
   }
 }

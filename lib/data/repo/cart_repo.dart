@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:watch_store/data/conf/remote_conf.dart';
 import 'package:watch_store/data/model/cart.dart';
+import 'package:watch_store/data/model/user_address.dart';
 import 'package:watch_store/data/src/cart_data_src.dart';
 
 abstract class ICartRepository {
@@ -8,6 +9,7 @@ abstract class ICartRepository {
   Future<UserCart> addToCart({required int productId});
   Future<UserCart> deleteFromCart({required int productId});
   Future<UserCart> removeFromCart({required int productId});
+  Future<UserAddress> getUserAddresses();
   Future<int> countCartItems();
   Future<String> payCart();
 }
@@ -43,6 +45,9 @@ class CartRepo implements ICartRepository {
 
   @override
   Future<String> payCart() => _cartDataSrc.payCart();
+
+  @override
+  Future<UserAddress> getUserAddresses() => _cartDataSrc.getUserAddresses();
 }
 
 final cartRepository = CartRepo(CartRemoteDataSrc(DioManager.dio));

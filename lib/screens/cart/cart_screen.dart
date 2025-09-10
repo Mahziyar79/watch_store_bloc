@@ -29,46 +29,7 @@ class CartScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Container(
-              margin: EdgeInsets.only(top: AppDimens.medium),
-              padding: EdgeInsets.all(AppDimens.medium),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    offset: Offset(0, 3),
-                    blurRadius: 3,
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: SvgPicture.asset(Assets.svg.leftArrow),
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          AppStrings.sendToAddress,
-                          style: LightAppTextStyle.caption,
-                        ),
-                        Text(
-                          AppStrings.lorem,
-                          style: LightAppTextStyle.caption,
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            UserAddress(address: 'test2'),
             BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
                 if (state is CartLoadedState) {
@@ -80,7 +41,7 @@ class CartScreen extends StatelessWidget {
                 } else if (state is CartItemRemovedState) {
                   return CartList(list: state.userCart.cartList);
                 } else if (state is CartErrorState) {
-                  return Text('Error');
+                  return Text('Error Cart');
                 } else if (state is CartLoadingState) {
                   return LinearProgressIndicator();
                 } else {
@@ -107,7 +68,7 @@ class CartScreen extends StatelessWidget {
                     userCart = (state as dynamic).userCart;
                     break;
                   case const (CartErrorState):
-                    return Text('Error');
+                    return Text('Error Pay');
                   case const (CartLoadingState):
                     return LinearProgressIndicator();
                   default:
@@ -177,6 +138,52 @@ class CartScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class UserAddress extends StatelessWidget {
+  const UserAddress({super.key, required this.address});
+
+  final String address;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: AppDimens.medium),
+      padding: EdgeInsets.all(AppDimens.medium),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black12, offset: Offset(0, 3), blurRadius: 3),
+        ],
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () {},
+            icon: SvgPicture.asset(Assets.svg.leftArrow),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  AppStrings.sendToAddress,
+                  style: LightAppTextStyle.caption,
+                ),
+                Text(
+                  address,
+                  style: LightAppTextStyle.caption,
+                  textAlign: TextAlign.right,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

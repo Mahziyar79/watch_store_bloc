@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:watch_store/data/model/cart.dart';
+import 'package:watch_store/data/model/user_address.dart';
 import 'package:watch_store/data/repo/cart_repo.dart';
 
 part 'cart_event.dart';
@@ -49,6 +50,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           // PayEvent
           final response = await _cartRepository.payCart();
           emit(RecivedPayLinkState(url: response));
+        } else if (event is GetUserAddressEvent) {
+          // GetUserAddressEvent
+          emit(UserAddressLoadingState());
+          final response = await _cartRepository.getUserAddresses();
+          emit(GetUserAddressesLoadedState(userAddress: response));
         }
       } catch (e) {
         emit(CartErrorState());
