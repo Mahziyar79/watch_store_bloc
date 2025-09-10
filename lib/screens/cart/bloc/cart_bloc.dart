@@ -53,8 +53,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         } else if (event is GetUserAddressEvent) {
           // GetUserAddressEvent
           emit(UserAddressLoadingState());
-          final response = await _cartRepository.getUserAddresses();
-          emit(GetUserAddressesLoadedState(userAddress: response));
+          try {
+            final response = await _cartRepository.getUserAddresses();
+            emit(GetUserAddressesLoadedState(userAddress: response));
+          } catch (_) {
+            emit(UserAddressErrorState());
+          }
         }
       } catch (e) {
         emit(CartErrorState());

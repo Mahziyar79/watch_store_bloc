@@ -19,6 +19,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<CartBloc>(context).add(CartInitEvent());
+    BlocProvider.of<CartBloc>(context).add(GetUserAddressEvent());
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
@@ -29,8 +30,33 @@ class CartScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            UserAddress(address: 'test2'),
+            BlocConsumer<CartBloc, CartState>(
+              listenWhen: (previous, current) => current is RecivedPayLinkState,
+              listener: (context, state) {},
+              buildWhen: (previous, current) =>
+                  current is UserAddressLoadingState ||
+                  current is GetUserAddressesLoadedState ||
+                  current is UserAddressErrorState,
+              builder: (context, state) {
+                if (state is GetUserAddressesLoadedState) {
+                  return UserAddress(address: state.userAddress.address);
+                } else if (state is UserAddressLoadingState) {
+                  return const LinearProgressIndicator();
+                } else if (state is UserAddressErrorState) {
+                  return const SizedBox.shrink();
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
             BlocBuilder<CartBloc, CartState>(
+              buildWhen: (previous, current) =>
+                  current is CartLoadedState ||
+                  current is CartItemAddedState ||
+                  current is CartItemDeletedState ||
+                  current is CartItemRemovedState ||
+                  current is CartErrorState ||
+                  current is CartLoadingState,
               builder: (context, state) {
                 if (state is CartLoadedState) {
                   return CartList(list: state.userCart.cartList);
@@ -45,7 +71,7 @@ class CartScreen extends StatelessWidget {
                 } else if (state is CartLoadingState) {
                   return LinearProgressIndicator();
                 } else {
-                  return CircularProgressIndicator();
+                  return SizedBox();
                 }
               },
             ),
@@ -58,6 +84,13 @@ class CartScreen extends StatelessWidget {
                   }
                 }
               },
+              buildWhen: (previous, current) =>
+                  current is CartLoadedState ||
+                  current is CartItemAddedState ||
+                  current is CartItemDeletedState ||
+                  current is CartItemRemovedState ||
+                  current is CartErrorState ||
+                  current is CartLoadingState,
               builder: (context, state) {
                 UserCart? userCart;
                 switch (state.runtimeType) {

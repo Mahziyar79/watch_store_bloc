@@ -11,6 +11,7 @@ final class CartInitialState extends CartState {}
 
 final class CartLoadingState extends CartState {}
 final class UserAddressLoadingState extends CartState {}
+final class UserAddressErrorState extends CartState {}
 
 final class CartLoadingSingleState extends CartState {}
 

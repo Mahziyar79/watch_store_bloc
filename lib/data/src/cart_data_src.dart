@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:watch_store/data/constants.dart';
 import 'package:watch_store/data/model/cart.dart';
 import 'package:watch_store/data/model/user_address.dart';
@@ -78,8 +79,9 @@ class CartRemoteDataSrc implements ICartDataSrc {
 
   @override
   Future<UserAddress> getUserAddresses() async {
-    final response = await httpClient.post(Endpoints.profile);
+    final response = await httpClient.post(Endpoints.userAddresses);
+    debugPrint(response.toString());
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
-    return UserAddress.fromJson(response.data['data']);
+    return UserAddress.fromJson(response.data['data'].first);
   }
 }
