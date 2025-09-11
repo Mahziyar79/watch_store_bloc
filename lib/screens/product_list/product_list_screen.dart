@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:watch_store/components/extention.dart';
 import 'package:watch_store/components/text_style.dart';
 import 'package:watch_store/data/model/brand.dart';
 import 'package:watch_store/data/repo/cart_repo.dart';
@@ -12,6 +11,7 @@ import 'package:watch_store/screens/product_list/bloc/product_list_bloc.dart';
 import 'package:watch_store/widgets/app_bar.dart';
 import 'package:watch_store/widgets/cart_badge.dart';
 import 'package:watch_store/widgets/product_item.dart';
+import 'package:watch_store/widgets/sort_dropdown.dart';
 
 class ProductListScreen extends StatelessWidget {
   final ProductListEvent initialEvent;
@@ -63,13 +63,7 @@ class ProductListScreen extends StatelessWidget {
                   },
                   valueListenable: cartRepository.cartCount,
                 ),
-                Row(
-                  children: [
-                    Text('پرفروش ترین ها', style: LightAppTextStyle.title),
-                    AppDimens.small.width,
-                    SvgPicture.asset(Assets.svg.sort),
-                  ],
-                ),
+                const SortDropdown(),
                 IconButton(
                   onPressed: () {
                     Navigator.pop(context);

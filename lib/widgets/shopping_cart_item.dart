@@ -109,7 +109,10 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
             ),
           ),
           AppDimens.small.width,
-          Image.network(widget.cartModel.image, width: 80),
+          SizedBox(
+            width: 80,
+            child: Image.network(widget.cartModel.image, width: 80),
+          ),
         ],
       ),
     );
