@@ -13,13 +13,24 @@ import 'package:watch_store/screens/cart/bloc/cart_bloc.dart';
 import 'package:watch_store/widgets/app_bar.dart';
 import 'package:watch_store/widgets/shopping_cart_item.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final cartBloc = BlocProvider.of<CartBloc>(context, listen: false);
+    cartBloc.add(CartInitEvent());
+    cartBloc.add(GetUserAddressEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    BlocProvider.of<CartBloc>(context).add(CartInitEvent());
-    BlocProvider.of<CartBloc>(context).add(GetUserAddressEvent());
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
@@ -41,7 +52,7 @@ class CartScreen extends StatelessWidget {
                 if (state is GetUserAddressesLoadedState) {
                   return UserAddress(address: state.userAddress.address);
                 } else if (state is UserAddressLoadingState) {
-                  return const LinearProgressIndicator();
+                  return const SizedBox.shrink();
                 } else if (state is UserAddressErrorState) {
                   return const SizedBox.shrink();
                 } else {

@@ -80,7 +80,6 @@ class CartRemoteDataSrc implements ICartDataSrc {
   @override
   Future<UserAddress> getUserAddresses() async {
     final response = await httpClient.post(Endpoints.userAddresses);
-    debugPrint(response.toString());
     HTTPResponseValidator.isValidStatusCode(response.statusCode ?? 0);
     return UserAddress.fromJson(response.data['data'].first);
   }

@@ -55,7 +55,6 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
           final productList = await _iProductReop.searchProducts(
             event.searchKey,
           );
-          debugPrint(productList.toString());
           final brandsList = await _iProductReop.getAllBrands();
 
           emit(

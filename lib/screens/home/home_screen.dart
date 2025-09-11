@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                       AppSlider(imgList: state.home.sliders),
                       // Category
                       SizedBox(
-                        height: 100,
+                        height: 120,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           reverse: true,
