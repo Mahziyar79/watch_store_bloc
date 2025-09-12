@@ -8,6 +8,8 @@ import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
 import 'package:watch_store/res/strings.dart';
+import 'package:watch_store/routes/names.dart';
+import 'package:watch_store/screens/auth/cubit/auth_cubit.dart';
 import 'package:watch_store/screens/profile/bloc/profile_bloc.dart';
 import 'package:watch_store/widgets/app_bar.dart';
 import 'package:watch_store/widgets/surface_container.dart';
@@ -120,6 +122,33 @@ class ProfileScreen extends StatelessWidget {
                                 Text(
                                   state.userInfoList.userInfo.address.address,
                                   style: LightAppTextStyle.title,
+                                ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          WidgetStateColor.resolveWith((
+                                            states,
+                                          ) {
+                                            return AppColors.discountBg;
+                                          }),
+                                    ),
+                                    onPressed: () async {
+                                      if (!context.mounted) return;
+                                      await context.read<AuthCubit>().logout();
+                                      Navigator.of(
+                                        context,
+                                      ).pushNamedAndRemoveUntil(
+                                        ScreenNames.sendSmsScreen,
+                                        (route) => false,
+                                      );
+                                    },
+                                    child: Text(
+                                      'خروج از حساب کاربری',
+                                      style: LightAppTextStyle.tagTitle,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

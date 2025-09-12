@@ -239,13 +239,19 @@ class CartList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return ShoppingCartItem(cartModel: list[index]);
-        },
-      ),
-    );
+    return list.isNotEmpty
+        ? Expanded(
+            child: ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                return ShoppingCartItem(cartModel: list[index]);
+              },
+            ),
+          )
+        : Expanded(
+            child: Center(
+              child: Text('سبد خرید خالی است', style: LightAppTextStyle.title),
+            ),
+          );
   }
 }

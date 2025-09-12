@@ -61,6 +61,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();
+                  context.read<AuthCubit>().stopTimer();
                 },
                 child: Text(
                   AppStrings.wrongNumberEditNumber,

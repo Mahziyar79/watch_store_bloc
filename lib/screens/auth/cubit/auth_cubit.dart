@@ -11,7 +11,7 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   String? _serverCode;
-  String? get serverCode => _serverCode; 
+  String? get serverCode => _serverCode;
   AuthCubit() : super(AuthInitial()) {
     String? token = SharedPreferencesManager().getString(
       SharedPreferencesKeys.token,
@@ -98,5 +98,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   void stopTimer() {
     _timer?.cancel();
+  }
+
+  Future<void> logout() async {
+    await SharedPreferencesManager().remove(SharedPreferencesKeys.token);
+    emit(LoggedOutState());
   }
 }

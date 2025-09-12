@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:watch_store/data/model/brand.dart';
 import 'package:watch_store/data/model/product.dart';
 import 'package:watch_store/data/repo/product_repo.dart';
