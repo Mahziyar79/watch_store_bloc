@@ -76,7 +76,12 @@ class ProfileScreen extends StatelessWidget {
                                 AppDimens.medium.width,
                                 Expanded(
                                   child: Text(
-                                    state.userInfoList.userInfo.address.address,
+                                    state
+                                            .userInfoList
+                                            .userInfo
+                                            .address
+                                            ?.address ??
+                                        "آدرسی ثبت نشده است",
                                     style: LightAppTextStyle.title,
                                     softWrap: true,
                                     maxLines: 2,
@@ -120,9 +125,11 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                                 AppDimens.small.height,
                                 Text(
-                                  state.userInfoList.userInfo.address.address,
+                                  AppStrings.lorem,
                                   style: LightAppTextStyle.title,
+                                  textAlign: TextAlign.right,
                                 ),
+                                 AppDimens.small.height,
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
@@ -137,12 +144,6 @@ class ProfileScreen extends StatelessWidget {
                                     onPressed: () async {
                                       if (!context.mounted) return;
                                       await context.read<AuthCubit>().logout();
-                                      Navigator.of(
-                                        context,
-                                      ).pushNamedAndRemoveUntil(
-                                        ScreenNames.sendSmsScreen,
-                                        (route) => false,
-                                      );
                                     },
                                     child: Text(
                                       'خروج از حساب کاربری',
@@ -158,8 +159,10 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 );
+              } else if (state is ProfileErrorState) {
+                return Center(child: Text("مشکلی پیش اومده، دوباره تلاش کنید"));
               } else {
-                throw Exception('error');
+                return Center(child: CircularProgressIndicator());
               }
             },
           ),

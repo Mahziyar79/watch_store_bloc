@@ -1,50 +1,52 @@
 import 'package:watch_store/data/model/address.dart';
 
-class UserInfo {
-  int id;
-  String name;
-  String mobile;
-  String phone;
-  Address address;
-
-  UserInfo({
-    required this.id,
-    required this.name,
-    required this.mobile,
-    required this.phone,
-    required this.address,
-  });
-
-  factory UserInfo.fromJson(Map<String, dynamic> json) {
-    return UserInfo(
-      id: json['id'],
-      name: json['name'],
-      mobile: json['mobile'],
-      phone: json['phone'],
-      address: Address.fromJson(json['address']),
-    );
-  }
-}
-
 class User {
-  UserInfo userInfo;
-  int userProcessingCount;
-  int userReceivedCount;
-  int userCancelCount;
+  final UserInfo userInfo;
+  final int userProcessingCount;
+  final int userReceivedCount;
+  final int userCancelCount;
 
   User({
     required this.userInfo,
-    required this.userProcessingCount,
-    required this.userReceivedCount,
-    required this.userCancelCount,
+    this.userProcessingCount = 0,
+    this.userReceivedCount = 0,
+    this.userCancelCount = 0,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      userInfo: UserInfo.fromJson(json['user_info']),
-      userProcessingCount: json['user_processing_count'],
-      userReceivedCount: json['user_received_count'],
-      userCancelCount: json['user_cancel_count'],
+      userInfo: UserInfo.fromJson(json['user_info'] ?? {}),
+      userProcessingCount: json['user_processing_count'] ?? 0,
+      userReceivedCount: json['user_received_count'] ?? 0,
+      userCancelCount: json['user_cancel_count'] ?? 0,
+    );
+  }
+}
+
+class UserInfo {
+  final int id;
+  final String name;
+  final String mobile;
+  final String? phone;
+  final Address? address;
+
+  UserInfo({
+    required this.id,
+    this.name = "بدون نام",
+    this.mobile = "-",
+    this.phone,
+    this.address,
+  });
+
+  factory UserInfo.fromJson(Map<String, dynamic> json) {
+    return UserInfo(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? "بدون نام",
+      mobile: json['mobile'] ?? "-",
+      phone: json['phone'],
+      address: json['address'] != null
+          ? Address.fromJson(json['address'])
+          : null,
     );
   }
 }

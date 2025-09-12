@@ -58,7 +58,7 @@ class AuthCubit extends Cubit<AuthState> {
           .then((value) {
             debugPrint(value.toString());
 
-            if (value.statusCode == 201) {
+            if (value.statusCode == 201 || value.statusCode == 200) {
               SharedPreferencesManager().saveString(
                 SharedPreferencesKeys.token,
                 value.data["data"]["token"],

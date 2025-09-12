@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watch_store/components/themes.dart';
 import 'package:watch_store/data/repo/cart_repo.dart';
 import 'package:watch_store/my_http_overrides.dart';
+import 'package:watch_store/routes/names.dart';
 import 'package:watch_store/routes/routes.dart';
 import 'package:watch_store/screens/auth/cubit/auth_cubit.dart';
 import 'package:watch_store/screens/auth/send_sms_screen.dart';
@@ -25,9 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => AuthCubit(),
-        ),
+        BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(
           create: (_) {
             final cartBloc = CartBloc(cartRepository);
@@ -42,14 +41,23 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: lightTheme(),
         routes: routes,
-        home: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            if (state is LoggedInState) {
-              return MainScreen(); 
-            } else {
-              return SendSmsScreen();
+        home: BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is LoggedOutState) {
+              Navigator.of(
+                context,
+              ).pushReplacementNamed(ScreenNames.sendSmsScreen);
             }
           },
+          child: BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              if (state is LoggedInState) {
+                return MainScreen();
+              } else {
+                return SendSmsScreen();
+              }
+            },
+          ),
         ),
       ),
     );
