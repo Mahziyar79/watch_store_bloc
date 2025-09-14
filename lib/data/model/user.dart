@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+
 class User {
   final String name;
   final String phone;
   final String address;
   final String postalCode;
-  final image;
+  final MultipartFile? image;
   final double lat;
   final double lng;
 

@@ -136,6 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           );
 
                           BlocProvider.of<RegisterCubit>(
+                            // ignore: use_build_context_synchronously
                             context,
                           ).register(user: user);
                         },

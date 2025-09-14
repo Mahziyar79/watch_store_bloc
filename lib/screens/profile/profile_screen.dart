@@ -8,7 +8,6 @@ import 'package:watch_store/gen/assets.gen.dart';
 import 'package:watch_store/res/colors.dart';
 import 'package:watch_store/res/dimens.dart';
 import 'package:watch_store/res/strings.dart';
-import 'package:watch_store/routes/names.dart';
 import 'package:watch_store/screens/auth/cubit/auth_cubit.dart';
 import 'package:watch_store/screens/profile/bloc/profile_bloc.dart';
 import 'package:watch_store/widgets/app_bar.dart';
